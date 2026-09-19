@@ -250,6 +250,8 @@ scoring, currency normalization and PII masking — see
 
 ## 11. License
 
+**Copyright (C) 2026 Chandan Kumar Shaw <shawchandankumar20@gmail.com>**
+
 Licensed under the **GNU General Public License v3.0** — see [LICENSE](LICENSE).
 
 GPLv3 is a strong copyleft license: you are free to use, study, share and modify this
