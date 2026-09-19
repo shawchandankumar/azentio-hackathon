@@ -57,6 +57,7 @@ public class AlertController {
     @Operation(summary = "List alerts (queue), sorted by risk score by default")
     public Page<AlertSummaryView> queue(
             @RequestParam(required = false) AlertStatus status,
+            @org.springdoc.core.annotations.ParameterObject
             @PageableDefault(size = 20, sort = "riskScore", direction = Sort.Direction.DESC) Pageable pageable) {
         return alertService.queueView(status, pageable);
     }

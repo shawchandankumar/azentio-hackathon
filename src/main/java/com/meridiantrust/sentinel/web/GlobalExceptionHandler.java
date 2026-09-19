@@ -27,10 +27,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /** Maps exceptions to consistent {@link ApiError} JSON with correct HTTP status codes. */
 @RestControllerAdvice
@@ -59,9 +62,24 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "Constraint violation", req, details);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class,
+            MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ApiError> handleBadRequest(Exception ex, HttpServletRequest req) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req, null);
+    }
+
+    /** Invalid sort/filter property (e.g. a bad Pageable {@code sort} value) → 400, not 500. */
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ApiError> handleBadProperty(PropertyReferenceException ex, HttpServletRequest req) {
+        return build(HttpStatus.BAD_REQUEST,
+                "Invalid sort/property: '" + ex.getPropertyName() + "'", req, null);
+    }
+
+    /** Unknown route (e.g. wrong path / missing /api/v1 prefix) → 404, not 500. */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResource(NoResourceFoundException ex, HttpServletRequest req) {
+        return build(HttpStatus.NOT_FOUND, "No endpoint for " + req.getMethod() + " " + req.getRequestURI(),
+                req, null);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
