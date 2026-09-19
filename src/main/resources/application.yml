@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: sentinel-aml
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sentinel}
+    username: ${DB_USER:sentinel}
+    password: ${DB_PASSWORD:sentinel}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        format_sql: false
+
+# Bootstrap credentials for the seeded application users. In production these
+# MUST come from environment variables / a secrets manager, never hardcoded.
+sentinel:
+  security:
+    users:
+      admin-password: ${SENTINEL_ADMIN_PASSWORD:admin123}
+      analyst-password: ${SENTINEL_ANALYST_PASSWORD:analyst123}
+      supervisor-password: ${SENTINEL_SUPERVISOR_PASSWORD:supervisor123}
+  base-currency: INR
+  seed:
+    # Seed reference data (rules, FX, watchlists) and synthetic customers/accounts/
+    # transactions on startup when the database is empty, then run detection.
+    enabled: true
+    synthetic: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    com.meridiantrust.sentinel: INFO
+    org.springframework.security: WARN
