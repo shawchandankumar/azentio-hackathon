@@ -245,3 +245,14 @@ scoring, currency normalization and PII masking — see
 - **Auditability:** every alert/case transition writes an append-only `audit_events` row with actor
   and timestamp.
 - **Data privacy:** all seed data is synthetic; no real PII.
+
+---
+
+## 11. License
+
+Licensed under the **GNU General Public License v3.0** — see [LICENSE](LICENSE).
+
+GPLv3 is a strong copyleft license: you are free to use, study, share and modify this
+software, but any distributed derivative work must also be released under GPLv3 with its
+source available — so improvements flow back to the community and the code cannot be
+locked up in a proprietary product.
